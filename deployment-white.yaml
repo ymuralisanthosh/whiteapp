@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: white-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: white-app
+  template:
+    metadata:
+      labels:
+        app: white-app
+    spec:
+      containers:
+      - name: white-app
+        image: your-registry/white-app:latest
+        ports:
+        - containerPort: 8080
+
