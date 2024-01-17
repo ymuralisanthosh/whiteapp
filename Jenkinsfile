@@ -8,6 +8,7 @@ pipeline {
         ECR_REPO_NAME = 'assignment-repo'
         AWS_ACCOUNT_ID = '709087243859'
         ECR_REPO_URL = '709087243859.dkr.ecr.ap-south-1.amazonaws.com/assignment-repo'
+        DOCKER_IMAGE_NAME = 'application/whiteapp-image'
     }
     stages {
         stage('checkout') {
