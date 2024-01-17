@@ -1,12 +1,15 @@
-# Use an official OpenJDK runtime as a base image
+# Use a base image with OpenJDK
 FROM openjdk:11-jre-slim
 
 # Set the working directory
 WORKDIR /app
 
-# Copy the white-app JAR file into the container at /app
-COPY white-app.jar /app/white-app.jar
+# Copy the latest artifact into the container
+COPY /var/lib/jenkins/workspace/Whiteapp/target/*.war /app/application.war
 
-# Specify the command to run on container startup
-CMD ["java", "-jar", "white-app.jar"]
+# Expose the port (adjust if your application uses a different port)
+EXPOSE 8080
+
+# Command to run your application
+CMD ["java", "-jar", "application.war"]
 
