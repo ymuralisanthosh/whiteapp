@@ -60,7 +60,7 @@ pipeline {
             steps {
                 script {
                     // Set the Docker image name and tag
-                    def dockerImage = "your-docker-registry/whiteapp-image:latest"
+                    def dockerImage = "application/whiteapp-image:latest"
 
                     // Build the Docker image
                     def dockerBuildCommand = "docker build -t ${dockerImage} ."
