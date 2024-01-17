@@ -7,6 +7,7 @@ pipeline {
         AWS_REGION = 'ap-south-1'
         ECR_REPO_NAME = 'assignment-repo'
         AWS_ACCOUNT_ID = '709087243859'
+        ECR_REPO_URL = '709087243859.dkr.ecr.ap-south-1.amazonaws.com/assignment-repo'
     }
     stages {
         stage('checkout') {
