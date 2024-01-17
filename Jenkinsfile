@@ -1,6 +1,10 @@
 pipeline {
     agent any
-
+    environment {
+        ARTIFACTORY_URL = 'http://13.201.102.58:8082/artifactory/application/'
+        ARTIFACTORY_REPO = 'application/'
+        ARTIFACTORY_PATH = 'http://13.201.102.58:8082/artifactory/application/com/example/white-app/1.0-SNAPSHOT/'
+    }
     stages {
         stage('checkout') {
             steps {
@@ -56,15 +60,11 @@ pipeline {
                 }  
             }
         }
-	stage('Build Docker Image') {
+        stage('Build Docker Image') {
             steps {
                 script {
-                    // Set the Docker image name and tag
-                    def dockerImage = "application/whiteapp-image:latest"
-
-                    // Build the Docker image
-                    def dockerBuildCommand = "docker build -t ${dockerImage} ."
-                    sh dockerBuildCommand
+                    def dockerBuildArgs = "--build-arg ARTIFACTORY_URL=${env.ARTIFACTORY_URL} --build-arg ARTIFACTORY_REPO=${env.ARTIFACTORY_REPO} --build-arg ARTIFACTORY_PATH=${env.ARTIFACTORY_PATH}"
+                    sh "docker build ${dockerBuildArgs} -t application/whiteapp-image:latest ."
                 }
             }
         }
