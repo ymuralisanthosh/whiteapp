@@ -5,11 +5,11 @@ FROM openjdk:11-jre-slim
 WORKDIR /app
 
 # Copy the latest artifact into the container
-COPY /var/lib/jenkins/workspace/Whiteapp/target/*.war /app/application.war
+COPY /var/lib/jenkins/workspace/Whiteapp/target/*.jar /app/application.jar
 
 # Expose the port (adjust if your application uses a different port)
 EXPOSE 9080
 
 # Command to run your application
-CMD ["java", "-jar", "application.war"]
+CMD ["java", "-jar", "application.jar"]
 
