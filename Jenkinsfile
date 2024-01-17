@@ -46,7 +46,7 @@ pipeline {
                             spec: '''{
                                   "files": [
                                     {
-                                      "pattern": "application-artifact.war",
+                                      "pattern": "application-artifact.jar",
                                       "target": "application/${buildNumber}/"
                                      }
                                   ]
