@@ -4,9 +4,6 @@ FROM openjdk:11-jre-slim
 # Set the working directory
 WORKDIR /app
 
-# Copy the latest artifact into the container
-COPY /var/lib/jenkins/workspace/Whiteapp/target/*.jar /app/application.jar
-
 # Expose the port (adjust if your application uses a different port)
 EXPOSE 8080
 
