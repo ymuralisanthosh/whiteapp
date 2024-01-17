@@ -4,6 +4,9 @@ pipeline {
         ARTIFACTORY_URL = 'http://13.201.102.58:8082/artifactory/application/'
         ARTIFACTORY_REPO = 'application/'
         ARTIFACTORY_PATH = 'http://13.201.102.58:8082/artifactory/application/com/example/white-app/1.0-SNAPSHOT/'
+        AWS_REGION = 'ap-south-1'
+        ECR_REPO_NAME = 'assignment-repo'
+        AWS_ACCOUNT_ID = '709087243859'
     }
     stages {
         stage('checkout') {
@@ -65,6 +68,22 @@ pipeline {
                 script {
                     def dockerBuildArgs = "--build-arg ARTIFACTORY_URL=${env.ARTIFACTORY_URL} --build-arg ARTIFACTORY_REPO=${env.ARTIFACTORY_REPO} --build-arg ARTIFACTORY_PATH=${env.ARTIFACTORY_PATH}"
                     sh "docker build ${dockerBuildArgs} -t application/whiteapp-image:latest ."
+                }
+            }
+        }
+        stage('Push to ECR') {
+            steps {
+                script {
+                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: '709087243859']]) {
+                        sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URL}"
+                    }
+
+                    // Tag the Docker image
+                    sh "docker tag ${DOCKER_IMAGE_NAME}:latest ${ECR_REPO_URL}/${DOCKER_IMAGE_NAME}:latest"
+
+                    // Push the Docker image to ECR
+                    sh "docker push ${ECR_REPO_URL}/${DOCKER_IMAGE_NAME}:latest"
+                    }
                 }
             }
         }
