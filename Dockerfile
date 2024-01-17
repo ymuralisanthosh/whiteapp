@@ -8,7 +8,7 @@ WORKDIR /app
 COPY /var/lib/jenkins/workspace/Whiteapp/target/*.jar /app/application.jar
 
 # Expose the port (adjust if your application uses a different port)
-EXPOSE 9080
+EXPOSE 8080
 
 # Command to run your application
 CMD ["java", "-jar", "application.jar"]
