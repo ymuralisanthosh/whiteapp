@@ -83,7 +83,6 @@ pipeline {
 
                     // Push the Docker image to ECR
                     sh "docker push ${ECR_REPO_URL}/${DOCKER_IMAGE_NAME}:latest"
-                    }
                 }
             }
         }
