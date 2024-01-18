@@ -9,7 +9,8 @@ pipeline {
         AWS_ACCOUNT_ID = '709087243859'
         ECR_REPO_URL = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME}"
         DOCKER_IMAGE_NAME = 'application/whiteapp-image'
-        BUILD_NUMBER = "${env.BUILD_NUMBER ?: 'latest'}"
+        BUILD_NUMBER = env.BUILD_NUMBER
+
     }
     stages {
         stage('checkout') {
@@ -83,11 +84,8 @@ pipeline {
                         sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URL}"
                     }
 
-                    // Tag the Docker image
-                    sh "docker tag ${DOCKER_IMAGE_NAME}:latest ${ECR_REPO_URL}:${BUILD_NUMBER}"
-
-                    // Push the Docker image to ECR
-                    sh "docker push ${ECR_REPO_URL}:${BUILD_NUMBER}"
+                    // Push the Docker image to ECR using the dynamically generated tag
+                    sh "docker push ${env.DOCKER_IMAGE_TAG}"
                 }
             }
         }
