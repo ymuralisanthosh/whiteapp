@@ -79,14 +79,14 @@ pipeline {
             steps {
                 script {
                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: '709087243859']]) {
-                        // Login to ECR
-                        sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URL}"
+                // Login to ECR
+                sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URL}"
 
-                        // Tag the Docker image with the unique tag
-                        sh "docker tag ${DOCKER_IMAGE_TAG} ${DOCKER_IMAGE_NAME}:latest"
+                // Tag the Docker image with the unique tag
+                sh "docker tag ${DOCKER_IMAGE_TAG} ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
 
-                        // Push the Docker image to ECR
-                        sh "docker push ${DOCKER_IMAGE_NAME}:latest"
+                // Push the Docker image to ECR
+                sh "docker push ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
                     }
                 }
             }
