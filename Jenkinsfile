@@ -8,9 +8,8 @@ pipeline {
         ECR_REPO_NAME = 'assignment-repo'
         AWS_ACCOUNT_ID = '709087243859'
         ECR_REPO_URL = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME}"
-        DOCKER_IMAGE_NAME = 'application/whiteapp-image'
-        DOCKER_IMAGE_TAG = "${ECR_REPO_URL}/${DOCKER_IMAGE_NAME}:${TIMESTAMP}-${BUILD_NUMBER}"
-
+        DOCKER_IMAGE_NAME = 'assignment-repo/application/whiteapp-image'
+        DOCKER_IMAGE_TAG = "${ECR_REPO_URL}:${TIMESTAMP}-${BUILD_NUMBER}"
     }
     stages {
         stage('checkout') {
@@ -71,34 +70,26 @@ pipeline {
                 script {
                     def dockerBuildArgs = "--build-arg ARTIFACTORY_URL=${env.ARTIFACTORY_URL} --build-arg ARTIFACTORY_REPO=${env.ARTIFACTORY_REPO} --build-arg ARTIFACTORY_PATH=${env.ARTIFACTORY_PATH}"
 
-                    // Generate a unique tag for each build (timestamp-based)
-                    def buildTag = new Date().format("yyyyMMddHHmmss")
-        
-                    // Build the Docker image with the new tag
-                    sh "docker build ${dockerBuildArgs} -t ${ECR_REPO_URL}:${buildTag} ."
-                    
-                    // Push the Docker image to ECR with the new tag
-                    sh "docker push ${ECR_REPO_URL}:${buildTag}"
+                    // Build the Docker image with the unique tag
+                    sh "docker build ${dockerBuildArgs} -t ${DOCKER_IMAGE_TAG} ."
                 }
             }
         }
         stage('Push to ECR') {
             steps {
                 script {
-                    def uniqueTag = "${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
-
                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: '709087243859']]) {
+                        // Login to ECR
                         sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URL}"
-                    }
-        
-                    // Tag the Docker image
-                    sh "docker tag ${DOCKER_IMAGE_NAME}:latest ${ECR_REPO_URL}/${DOCKER_IMAGE_NAME}:${uniqueTag}"
-        
-                    // Push the Docker image to ECR
-                    sh "docker push ${ECR_REPO_URL}/${DOCKER_IMAGE_NAME}:${uniqueTag}"
+
+                        // Tag the Docker image with the unique tag
+                        sh "docker tag ${DOCKER_IMAGE_TAG} ${DOCKER_IMAGE_NAME}:latest"
+
+                        // Push the Docker image to ECR
+                        sh "docker push ${DOCKER_IMAGE_NAME}:latest"
                     }
                 }
             }
         }
     }
-
+}
