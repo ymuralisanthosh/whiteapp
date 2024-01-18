@@ -82,15 +82,17 @@ pipeline {
         stage('Push to ECR') {
             steps {
                 script {
-                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: '709087243859']]) {
-                        // Login to ECR
-                        sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URL}"
+                    def uniqueTag = "${BUILD_NUMBER}"
 
-                        // Tag the Docker image
-                        sh "docker tag ${DOCKER_IMAGE_NAME}:latest ${ECR_REPO_URL}:latest"
+            withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: '709087243859']]) {
+                // Login to ECR
+                sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URL}"
 
-                        // Push the Docker image to ECR
-                        sh "docker push ${ECR_REPO_URL}:latest"
+                // Tag the Docker image with a unique identifier
+                sh "docker tag ${DOCKER_IMAGE_NAME}:latest ${ECR_REPO_URL}:${uniqueTag}"
+
+                // Push the Docker image to ECR with the unique tag
+                sh "docker push ${ECR_REPO_URL}:${uniqueTag}"
                     }
                 }
             }
