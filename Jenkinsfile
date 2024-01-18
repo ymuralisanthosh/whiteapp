@@ -83,8 +83,11 @@ pipeline {
                         sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URL}"
                     }
 
-                    // Push the Docker image to ECR using the dynamically generated tag
-                    sh "docker push ${env.DOCKER_IMAGE_TAG}"
+                    // Tag the Docker image
+                    sh "docker tag ${DOCKER_IMAGE_NAME}:latest ${ECR_REPO_URL}:${BUILD_NUMBER}"
+
+                    // Push the Docker image to ECR
+                    sh "docker push ${ECR_REPO_URL}:${BUILD_NUMBER}"
                 }
             }
         }
