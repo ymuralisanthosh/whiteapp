@@ -72,7 +72,7 @@ pipeline {
                     def dockerBuildArgs = "--build-arg ARTIFACTORY_URL=${env.ARTIFACTORY_URL} --build-arg ARTIFACTORY_REPO=${env.ARTIFACTORY_REPO} --build-arg ARTIFACTORY_PATH=${env.ARTIFACTORY_PATH}"
 
                     // Generate a unique tag for each build (timestamp-based)
-                    def buildTag = ${BUILD_NUMBER}
+                    def buildTag = env.BUILD_NUMBER
         
                     // Build the Docker image with the new tag
                     sh "docker build ${dockerBuildArgs} -t ${ECR_REPO_URL}:${buildTag} ."
@@ -90,7 +90,7 @@ pipeline {
                         sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URL}"
 
                         // Generate a unique tag for each build (timestamp-based)
-                        def buildTag = ${BUILD_NUMBER}
+                        def buildTag = env.BUILD_NUMBER
 
                         // Tag the Docker image
                         sh "docker tag ${DOCKER_IMAGE_NAME}:latest ${ECR_REPO_URL}:${buildTag}"
