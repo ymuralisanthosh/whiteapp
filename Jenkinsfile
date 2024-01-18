@@ -7,7 +7,7 @@ pipeline {
         AWS_REGION = 'ap-south-1'
         ECR_REPO_NAME = 'assignment-repo'
         AWS_ACCOUNT_ID = '709087243859'
-        ECR_REPO_URL = '709087243859.dkr.ecr.ap-south-1.amazonaws.com/assignment-repo'
+        ECR_REPO_URL = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME}"
         DOCKER_IMAGE_NAME = 'application/whiteapp-image'
     }
     stages {
@@ -81,10 +81,10 @@ pipeline {
                     }
 
                     // Tag the Docker image
-                    sh "docker tag ${DOCKER_IMAGE_NAME}:latest ${ECR_REPO_URL}/${DOCKER_IMAGE_NAME}:latest"
-                    echo 'tagging completed'
+                    sh "docker tag ${DOCKER_IMAGE_NAME}:latest ${ECR_REPO_URL}:latest"
 
                     // Push the Docker image to ECR
+                    sh "docker push ${ECR_REPO_URL}:latest"
                     sh "docker push ${ECR_REPO_URL}/${DOCKER_IMAGE_NAME}:latest"
                 }
             }
