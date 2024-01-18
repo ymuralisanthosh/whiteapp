@@ -71,8 +71,8 @@ pipeline {
                 script {
                     def dockerBuildArgs = "--build-arg ARTIFACTORY_URL=${env.ARTIFACTORY_URL} --build-arg ARTIFACTORY_REPO=${env.ARTIFACTORY_REPO} --build-arg ARTIFACTORY_PATH=${env.ARTIFACTORY_PATH}"
 
-                    // Use the build number as part of the tag
-                    def buildTag = "${env.BUILD_NUMBER}"
+                    // Generate a unique tag for each build (timestamp-based)
+                    def buildTag = new Date().format("yyyyMMddHHmmss")
         
                     // Build the Docker image with the new tag
                     sh "docker build ${dockerBuildArgs} -t ${ECR_REPO_URL}:${buildTag} ."
