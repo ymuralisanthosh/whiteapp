@@ -9,7 +9,7 @@ pipeline {
         AWS_ACCOUNT_ID = '709087243859'
         ECR_REPO_URL = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME}"
         DOCKER_IMAGE_NAME = 'application/whiteapp-image'
-        DOCKER_IMAGE_TAG = "${ECR_REPO_URL}/${DOCKER_IMAGE_NAME}:${TIMESTAMP}-${BUILD_NUMBER}"
+        DOCKER_IMAGE_TAG = "${ECR_REPO_URL}/${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
 
     }
     stages {
@@ -72,7 +72,7 @@ pipeline {
                     def dockerBuildArgs = "--build-arg ARTIFACTORY_URL=${env.ARTIFACTORY_URL} --build-arg ARTIFACTORY_REPO=${env.ARTIFACTORY_REPO} --build-arg ARTIFACTORY_PATH=${env.ARTIFACTORY_PATH}"
 
                     // Generate a unique tag for each build (timestamp-based)
-                    def buildTag = new Date().format("yyyyMMddHHmmss")
+                    def buildTag = ${BUILD_NUMBER}
         
                     // Build the Docker image with the new tag
                     sh "docker build ${dockerBuildArgs} -t ${ECR_REPO_URL}:${buildTag} ."
@@ -90,7 +90,7 @@ pipeline {
                         sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URL}"
 
                         // Generate a unique tag for each build (timestamp-based)
-                        def buildTag = new Date().format("yyyyMMddHHmmss")
+                        def buildTag = ${BUILD_NUMBER}
 
                         // Tag the Docker image
                         sh "docker tag ${DOCKER_IMAGE_NAME}:latest ${ECR_REPO_URL}:${buildTag}"
