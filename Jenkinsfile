@@ -69,16 +69,16 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    ddef dockerBuildArgs = "--build-arg ARTIFACTORY_URL=${env.ARTIFACTORY_URL} --build-arg ARTIFACTORY_REPO=${env.ARTIFACTORY_REPO} --build-arg ARTIFACTORY_PATH=${env.ARTIFACTORY_PATH}"
+                    def dockerBuildArgs = "--build-arg ARTIFACTORY_URL=${env.ARTIFACTORY_URL} --build-arg ARTIFACTORY_REPO=${env.ARTIFACTORY_REPO} --build-arg ARTIFACTORY_PATH=${env.ARTIFACTORY_PATH}"
 
-            // Use the build number as part of the tag
-            def buildTag = "${env.BUILD_NUMBER}"
-
-            // Build the Docker image with the new tag
-            sh "docker build ${dockerBuildArgs} -t ${ECR_REPO_URL}:${buildTag} ."
-            
-            // Push the Docker image to ECR with the new tag
-            sh "docker push ${ECR_REPO_URL}:${buildTag}"
+                    // Use the build number as part of the tag
+                    def buildTag = "${env.BUILD_NUMBER}"
+        
+                    // Build the Docker image with the new tag
+                    sh "docker build ${dockerBuildArgs} -t ${ECR_REPO_URL}:${buildTag} ."
+                    
+                    // Push the Docker image to ECR with the new tag
+                    sh "docker push ${ECR_REPO_URL}:${buildTag}"
                 }
             }
         }
