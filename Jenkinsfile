@@ -82,6 +82,7 @@ pipeline {
 
                     // Tag the Docker image
                     sh "docker tag ${DOCKER_IMAGE_NAME}:latest ${ECR_REPO_URL}/${DOCKER_IMAGE_NAME}:latest"
+                    echo 'tagging completed'
 
                     // Push the Docker image to ECR
                     sh "docker push ${ECR_REPO_URL}/${DOCKER_IMAGE_NAME}:latest"
