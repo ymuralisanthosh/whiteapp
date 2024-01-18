@@ -5,7 +5,7 @@ pipeline {
         ARTIFACTORY_REPO = 'application/'
         ARTIFACTORY_PATH = 'http://13.201.102.58:8082/artifactory/application/com/example/white-app/1.0-SNAPSHOT/'
         AWS_REGION = 'ap-south-1'
-        ECR_REPO_NAME = 'assignment-repo'
+        ECR_REPO_NAME = 'whiteapp'
         AWS_ACCOUNT_ID = '709087243859'
         ECR_REPO_URL = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME}"
         DOCKER_IMAGE_NAME = 'application/whiteapp-image'
