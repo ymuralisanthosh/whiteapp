@@ -9,6 +9,7 @@ pipeline {
         AWS_ACCOUNT_ID = '709087243859'
         ECR_REPO_URL = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME}"
         DOCKER_IMAGE_NAME = 'application/whiteapp-image'
+        BUILD_NUMBER = env.BUILD_NUMBER ?: 'latest'
     }
     stages {
         stage('checkout') {
@@ -81,11 +82,10 @@ pipeline {
                     }
 
                     // Tag the Docker image
-                    sh "docker tag ${DOCKER_IMAGE_NAME}:latest ${ECR_REPO_URL}:latest"
+                    sh "docker tag ${DOCKER_IMAGE_NAME}:latest ${ECR_REPO_URL}:${BUILD_NUMBER}"
 
                     // Push the Docker image to ECR
-                    sh "docker push ${ECR_REPO_URL}:latest"
-                    sh "docker push ${ECR_REPO_URL}/${DOCKER_IMAGE_NAME}:latest"
+                    sh "docker push ${ECR_REPO_URL}:${BUILD_NUMBER}"
                 }
             }
         }
