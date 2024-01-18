@@ -70,18 +70,21 @@ pipeline {
             steps {
                 script {
                     def dockerBuildArgs = "--build-arg ARTIFACTORY_URL=${env.ARTIFACTORY_URL} --build-arg ARTIFACTORY_REPO=${env.ARTIFACTORY_REPO} --build-arg ARTIFACTORY_PATH=${env.ARTIFACTORY_PATH}"
-                    def dockerImageTag = "${ECR_REPO_URL}/${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
-                    sh "docker build ${dockerBuildArgs} -t ${dockerImageTag} ."
+                    env.DOCKER_IMAGE_TAG = "${ECR_REPO_URL}/${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
+
+                    sh "docker build ${dockerBuildArgs} -t ${env.DOCKER_IMAGE_TAG} ."
                 }
             }
         }
         stage('Push to ECR') {
             steps {
                 script {
-                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: '709087243859']]) {
-                     sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URL}"
-                        }
-                     sh "docker push ${dockerImageTag}"
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: '709087243859']]) {
+                        sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URL}"
+                    }
+
+                    // Push the Docker image to ECR using the dynamically generated tag
+                    sh "docker push ${env.DOCKER_IMAGE_TAG}"
                 }
             }
         }
