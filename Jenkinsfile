@@ -9,8 +9,6 @@ pipeline {
         AWS_ACCOUNT_ID = '709087243859'
         ECR_REPO_URL = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME}"
         DOCKER_IMAGE_NAME = 'application/whiteapp-image'
-        TIMESTAMP = "${new Date().getTime()}"
-        DOCKER_IMAGE_TAG = "${ECR_REPO_URL}/${DOCKER_IMAGE_NAME}:${TIMESTAMP}"
     }
     stages {
         stage('checkout') {
@@ -78,11 +76,17 @@ pipeline {
             steps {
                 script {
                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: '709087243859']]) {
+                        // Login to ECR
                         sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URL}"
-                    }
 
-                    // Push the Docker image to ECR using the dynamically generated tag
-                    sh "docker push ${DOCKER_IMAGE_TAG}"
+                        // Generate a unique tag for each build (timestamp-based)
+                        def buildTag = new Date().format("yyyyMMddHHmmss")
+
+                        // Tag the Docker image
+                        sh "docker tag ${DOCKER_IMAGE_NAME}:latest ${ECR_REPO_URL}:${buildTag}"
+
+                        // Push the Docker image to ECR
+                        sh "docker push ${ECR_REPO_URL}:${buildTag}"
                 }
             }
         }
