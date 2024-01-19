@@ -69,15 +69,19 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def dockerBuildArgs = "--build-arg ARTIFACTORY_URL=${env.ARTIFACTORY_URL} --build-arg ARTIFACTORY_REPO=${env.ARTIFACTORY_REPO} --build-arg ARTIFACTORY_PATH=${env.ARTIFACTORY_PATH}"
-
-                    // Generate a unique tag for each build (timestamp-based)
-                    def buildTag = new Date().format("yyyyMMddHHmmss")
-        
-                    // Build the Docker image with the new tag
-                    sh "docker build ${dockerBuildArgs} -t ${ECR_REPO_URL}:${buildTag} ."
+                    def ecrLoginCmd = "aws ecr get-login-password --region ${AWS_REGION}"
+                    def ecrAuthToken = sh(script: ecrLoginCmd, returnStdout: true).trim()
                     
-                    // Push the Docker image to ECR with the new tag
+                    // Log in to Docker with the new token
+                    sh "docker login --username AWS --password-stdin ${ECR_REPO_URL}" <<< "${ecrAuthToken}"
+                    
+                    // Generate a unique tag for each build (timestamp-based)
+                    def buildTag = env.BUILD_NUMBER
+                    
+                    // Tag the Docker image
+                    sh "docker tag ${DOCKER_IMAGE_NAME}:latest ${ECR_REPO_URL}:${buildTag}"
+                    
+                    // Push the Docker image to ECR
                     sh "docker push ${ECR_REPO_URL}:${buildTag}"
                 }
             }
