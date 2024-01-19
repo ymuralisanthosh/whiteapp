@@ -106,6 +106,7 @@ pipeline {
 
                         // Push the Docker image to ECR
                         sh "docker push ${ECR_REPO_URL}:${buildTag}"
+                    }
                 }
             }
         }
