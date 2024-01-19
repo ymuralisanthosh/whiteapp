@@ -106,7 +106,7 @@ pipeline {
                 script {
                     // Clone the Helm charts repository
                     sh "git clone https://github.com/ymuralisanthosh/helm-charts-assignment.git"
-                    sh "helm upgrade --install whiteapp k8s-helm-charts/whiteapp"
+                    sh "helm upgrade --install whiteapp helm-charts-assignment/whiteapp"
                 }
             }
         }
