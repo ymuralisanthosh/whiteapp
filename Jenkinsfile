@@ -90,11 +90,11 @@ pipeline {
                 script {
                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: '709087243859']]) {
                 
-                    // Refresh the authentication token for ECR
-                    def ecrLoginCmd = "aws ecr get-login-password --region ${AWS_REGION}"
+                    // Get the authentication token for ECR
+                    def ecrLoginCmd = "aws ecr get-login --region ${AWS_REGION} -e none"
                     def ecrAuthToken = sh(script: ecrLoginCmd, returnStdout: true).trim()
     
-                    // Login to ECR with the new token
+                    // Log in to Docker with the new token
                     sh "docker login --username AWS --password-stdin ${ECR_REPO_URL}" << ecrAuthToken
     
                     // Generate a unique tag for each build (timestamp-based)
