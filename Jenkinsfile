@@ -75,7 +75,7 @@ pipeline {
                     // Log in to Docker with the new token
                     script {
                         withCredentials([string(credentialsId: 'ecr-auth-token', variable: 'ECR_AUTH_TOKEN')]) {
-                            echo "${ECR_AUTH_TOKEN}" | docker login --username AWS --password-stdin ${ECR_REPO_URL}
+                            echo -n "${ECR_AUTH_TOKEN}" | docker login --username AWS --password-stdin ${ECR_REPO_URL}
                         }
                     }
                     
