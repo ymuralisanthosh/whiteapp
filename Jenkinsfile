@@ -73,7 +73,11 @@ pipeline {
                     def ecrAuthToken = sh(script: ecrLoginCmd, returnStdout: true).trim()
                     
                     // Log in to Docker with the new token
-                    sh "docker login --username AWS --password-stdin ${ECR_REPO_URL}" <<< "${ecrAuthToken}"
+                    script {
+                        withCredentials([string(credentialsId: 'ecr-auth-token', variable: 'ECR_AUTH_TOKEN')]) {
+                            echo ecrAuthToken | docker login --username AWS --password-stdin ${ECR_REPO_URL}
+                        }
+                    }
                     
                     // Generate a unique tag for each build (timestamp-based)
                     def buildTag = env.BUILD_NUMBER
