@@ -94,7 +94,18 @@ pipeline {
         stage('Push to ECR') {
             steps {
                 script {
-                    sh './docker-script.sh'
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: '709087243859']]) {
+                        // Login to ECR
+                        sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URL}"
+
+                        // Generate a unique tag for each build (timestamp-based)
+                        def buildTag = new Date().format("yyyyMMddHHmmss")
+
+                        // Tag the Docker image
+                        sh "docker tag ${DOCKER_IMAGE_NAME}:latest ${ECR_REPO_URL}:${buildTag}"
+
+                        // Push the Docker image to ECR
+                        sh "docker push ${ECR_REPO_URL}:${buildTag}"
                 }
             }
         }
