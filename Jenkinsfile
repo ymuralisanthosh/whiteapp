@@ -101,6 +101,15 @@ pipeline {
                 }
             }
         }
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    // Clone the Helm charts repository
+                    sh "git clone https://github.com/ymuralisanthosh/helm-charts-assignment.git"
+                    sh "helm upgrade --install whiteapp k8s-helm-charts/whiteapp"
+                }
+            }
+        }
     }
 }
     
