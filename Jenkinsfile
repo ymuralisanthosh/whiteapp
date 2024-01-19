@@ -88,26 +88,23 @@ pipeline {
         stage('Push to ECR') {
             steps {
                 script {
-                    stage('Push to ECR') {
-    steps {
-        script {
-            withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: '709087243859']]) {
-                
-                // Refresh the authentication token for ECR
-                def ecrLoginCmd = "aws ecr get-login-password --region ${AWS_REGION}"
-                def ecrAuthToken = sh(script: ecrLoginCmd, returnStdout: true).trim()
-
-                // Log in to Docker with the new token
-                sh "docker login --username AWS --password-stdin ${ECR_REPO_URL}" << ecrAuthToken
-
-                // Generate a unique tag for each build (timestamp-based)
-                def buildTag = env.BUILD_NUMBER
-
-                // Tag the Docker image
-                sh "docker tag ${DOCKER_IMAGE_NAME}:latest ${ECR_REPO_URL}:${buildTag}"
-
-                // Push the Docker image to ECR
-                sh "docker push ${ECR_REPO_URL}:${buildTag}"
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: '709087243859']]) {
+                        
+                        // Refresh the authentication token for ECR
+                        def ecrLoginCmd = "aws ecr get-login-password --region ${AWS_REGION}"
+                        def ecrAuthToken = sh(script: ecrLoginCmd, returnStdout: true).trim()
+        
+                        // Log in to Docker with the new token
+                        sh "docker login --username AWS --password-stdin ${ECR_REPO_URL}" << ecrAuthToken
+        
+                        // Generate a unique tag for each build (timestamp-based)
+                        def buildTag = env.BUILD_NUMBER
+        
+                        // Tag the Docker image
+                        sh "docker tag ${DOCKER_IMAGE_NAME}:latest ${ECR_REPO_URL}:${buildTag}"
+        
+                        // Push the Docker image to ECR
+                        sh "docker push ${ECR_REPO_URL}:${buildTag}"
 
                     }
                 }
