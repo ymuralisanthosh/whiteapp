@@ -113,24 +113,24 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    // Function to check if a file exists
-                    def dirExists(String path) {
-                        try {
-                            return file(path).isDirectory()
-                        } catch (Exception e) {
-                            return false
-                        }
-                    }
-        
                     // Check if the directory exists
                     if (!dirExists('helm-charts-assignment')) {
                         // Clone the Helm charts repository
                         sh 'git clone https://github.com/ymuralisanthosh/helm-charts-assignment.git'
                     }
-        
+    
                     // Upgrade/Install Helm chart
                     sh 'helm upgrade --install whiteapp helm-charts-assignment/whiteapp'
                 }
+            }
+        }
+    
+        // Function to check if a directory exists
+        def dirExists(String path) {
+            try {
+                return file(path).isDirectory()
+            } catch (Exception e) {
+                return false
             }
         }
     }
