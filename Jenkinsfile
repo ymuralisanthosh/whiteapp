@@ -1,3 +1,11 @@
+def dirExists(String path) {
+    try {
+        return file(path).isDirectory()
+    } catch (Exception e) {
+        return false
+    }
+}
+
 pipeline {
     agent any
     environment {
@@ -122,15 +130,6 @@ pipeline {
                     // Upgrade/Install Helm chart
                     sh 'helm upgrade --install whiteapp helm-charts-assignment/whiteapp'
                 }
-            }
-        }
-    
-        // Function to check if a directory exists
-        def dirExists(String path) {
-            try {
-                return file(path).isDirectory()
-            } catch (Exception e) {
-                return false
             }
         }
     }
