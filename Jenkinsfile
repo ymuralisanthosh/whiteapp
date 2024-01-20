@@ -114,7 +114,7 @@ pipeline {
             steps {
                 script {
                     // Function to check if a file exists
-                    def fileExists(String path) {
+                    def fileExists = { path ->
                         return file(path).exists()
                     }
 
