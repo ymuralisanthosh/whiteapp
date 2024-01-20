@@ -114,15 +114,15 @@ pipeline {
             steps {
                 script {
                     // Function to check if a file exists
-                    def fileExists(String path) {
+                        def fileExists(String path) {
                         return file(path).exists()
-                    }
+                        }
 
                     // Check if the file (or directory) exists
-                    if (!fileExists('helm-charts-assignment')) {
+                        if (!fileExists('helm-charts-assignment')) {
                         // Clone the Helm charts repository
                         sh 'git clone https://github.com/ymuralisanthosh/helm-charts-assignment.git'
-                    }
+                        }
 
                     // Upgrade/Install Helm chart
                     sh 'helm upgrade --install whiteapp helm-charts-assignment/whiteapp'
