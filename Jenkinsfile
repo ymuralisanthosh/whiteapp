@@ -115,9 +115,12 @@ pipeline {
                 script {
                     // Function to check if a file exists
                     def fileExists = { path ->
-                        return file(path).exists()
+                        try {
+                            return file(path).length() > 0
+                        } catch (Exception e) {
+                            return false
+                        }
                     }
-
                     // Check if the file (or directory) exists
                     if (!fileExists('helm-charts-assignment')) {
                         // Clone the Helm charts repository
