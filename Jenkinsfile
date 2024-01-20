@@ -113,21 +113,19 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    def helmChartsDir = 'helm-charts-assignment'
-
-                    // Function to check if a directory exists
+                    // Function to check if a file exists
                     def fileExists(String path) {
                         return file(path).exists()
                     }
 
-                    // Check if the Helm charts directory already exists
-                    if (!fileExists(helmChartsDir)) {
+                    // Check if the file (or directory) exists
+                    if (!fileExists('helm-charts-assignment')) {
                         // Clone the Helm charts repository
-                        sh "git clone https://github.com/ymuralisanthosh/helm-charts-assignment.git"
+                        sh 'git clone https://github.com/ymuralisanthosh/helm-charts-assignment.git'
                     }
 
                     // Upgrade/Install Helm chart
-                    sh "helm upgrade --install ${HELM_RELEASE_NAME} ${HELM_CHART_PATH} --namespace ${HELM_NAMESPACE}"
+                    sh 'helm upgrade --install whiteapp helm-charts-assignment/whiteapp'
                 }
             }
         }
