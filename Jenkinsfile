@@ -121,22 +121,17 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
+                    // Check if the directory exists
                     if (!dirExists('helm-charts-assignment')) {
+                        // Clone the Helm charts repository
                         sh 'git clone https://github.com/ymuralisanthosh/helm-charts-assignment.git'
+                    } else {
+                        // Directory already exists, update it
+                        sh 'cd helm-charts-assignment && git pull'
                     }
         
-                    try {
-                        // Add debug information or print commands being executed
-                        sh 'ls -al'
-                        sh 'helm list'
-                        
-                        // Upgrade/Install Helm chart
-                        sh 'helm upgrade --install whiteapp helm-charts-assignment/whiteapp'
-                    } catch (Exception e) {
-                        // Print exception details for debugging
-                        echo "Exception: ${e.message}"
-                        throw e
-                    }
+                    // Upgrade/Install Helm chart
+                    sh 'helm upgrade --install whiteapp helm-charts-assignment/whiteapp'
                 }
             }
         }
