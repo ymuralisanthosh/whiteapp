@@ -120,14 +120,17 @@ pipeline {
                     // Clone the Helm charts repository
                     sh 'git clone https://github.com/ymuralisanthosh/helm-charts-assignment.git'
                     echo 'cloned'
+        
                     // Full path to kubeconfig file
                     def kubeconfigPath = '/home/ubuntu/.kube/config'
                     echo 'defined path'
+        
                     // Upgrade/Install Helm chart with kubeconfig specified
-                    sh "/usr/local/bin/helm upgrade --install whiteapp helm-charts-assignment/assignment-apps/whiteapp --kubeconfig=${kubeconfigPath}"
+                    sh "/usr/local/bin/helm upgrade --install whiteapp assignment-apps/charts/whiteapp --kubeconfig=${kubeconfigPath}"
                 }
             }
-        }        
+        }
+        
     }
 }
     
