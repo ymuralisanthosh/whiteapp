@@ -1,8 +1,8 @@
 pipeline {
     agent {
         kubernetes {
-            cloud 'kubernetes'
-            inheritFrom 'docker-template'
+            cloud 'Kubernetes'
+            defaultContainer 'jnlp'
         }
     }
     environment {
