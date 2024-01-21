@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        kubernetes {
-            cloud 'Kubernetes'
-            defaultContainer 'jnlp'
-        }
-    }
+    agent any
     environment {
         ARTIFACTORY_URL = 'http://13.201.102.58:8082/artifactory/application/'
         ARTIFACTORY_REPO = 'application/'
@@ -120,10 +115,6 @@ pipeline {
                 script {
                     // Print kubeconfig contents
                     sh "cat ${kubeconfigPath}"
-        
-                    // Remove the existing directory if it exists
-                    sh 'rm -rf helm-charts-assignment'
-                    echo 'deleted chart'
         
                     // Clone the Helm charts repository
                     sh 'git clone https://github.com/ymuralisanthosh/helm-charts-assignment.git'
