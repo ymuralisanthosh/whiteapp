@@ -123,7 +123,7 @@ pipeline {
                     def kubeconfigPath = '/home/ubuntu/.kube/config'
         
                     // Upgrade/Install Helm chart with kubeconfig specified
-                    sh 'sudo helm upgrade --install whiteapp helm-charts-assignment/assignment-apps/whiteapp --kubeconfig=/home/ubuntu/.kube/config'
+                    sh 'sudo /usr/local/bin/helm upgrade --install whiteapp helm-charts-assignment/assignment-apps/whiteapp --kubeconfig=/home/ubuntu/.kube/config'
                 }
             }
         }
