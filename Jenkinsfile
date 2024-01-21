@@ -120,7 +120,19 @@ pipeline {
                 sh 'aws configure list'
             }
         }
-
+        stage('Print AWS Credentials') {
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: 'your-credentials-id']]) {
+                    sh 'echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID"'
+                    sh 'echo "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"'
+                }
+            }
+        }
+        stage('Print Kubeconfig Contents') {
+            steps {
+                sh 'cat /home/ubuntu/.kube/config'
+            }
+        }
         stage('Deploy to Kubernetes') {
             steps {
                 script {
@@ -135,10 +147,10 @@ pipeline {
                     def kubeconfigPath = '/home/ubuntu/.kube/config'
                     echo 'defined path'
                     // Upgrade/Install Helm chart with kubeconfig specified
-                    sh "sudo /usr/local/bin/helm upgrade --install whiteapp helm-charts-assignment/assignment-apps/whiteapp --kubeconfig=${kubeconfigPath}"
+                    sh "/usr/local/bin/helm upgrade --install whiteapp helm-charts-assignment/assignment-apps/whiteapp --kubeconfig=${kubeconfigPath}"
                 }
             }
-        }
+        }        
     }
 }
     
