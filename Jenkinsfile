@@ -124,7 +124,7 @@ pipeline {
                     def kubeconfigPath = '/home/ubuntu/.kube/config'
                     echo 'defined path'
                     // Upgrade/Install Helm chart with kubeconfig specified
-                    sh "/usr/local/bin/helm upgrade --install whiteapp helm-charts-assignment/assignment-apps/whiteapp --kubeconfig=${kubeconfigPath}"
+                    sh "sudo /usr/local/bin/helm upgrade --install whiteapp helm-charts-assignment/assignment-apps/whiteapp --kubeconfig=${kubeconfigPath}"
                 }
             }
         }
