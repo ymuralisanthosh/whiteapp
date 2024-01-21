@@ -110,30 +110,6 @@ pipeline {
                 }
             }
         }
-        stage('Print Environment') {
-            steps {
-                sh 'printenv'
-            }
-        }
-        stage('Print AWS CLI Config') {
-            steps {
-                sh 'aws configure list'
-            }
-        }
-        stage('Print AWS Credentials') {
-            steps {
-                script {
-                    echo "AWS_ACCESS_KEY_ID=${env.AWS_ACCESS_KEY_ID}"
-                    echo "AWS_SECRET_ACCESS_KEY=${env.AWS_SECRET_ACCESS_KEY}"
-                }
-            }
-        }
-
-        stage('Print Kubeconfig Contents') {
-            steps {
-                sh 'cat /home/ubuntu/.kube/config'
-            }
-        }
         stage('Deploy to Kubernetes') {
             steps {
                 script {
