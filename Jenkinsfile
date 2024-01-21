@@ -110,14 +110,6 @@ pipeline {
                 }
             }
         }
-        stage('Debugging') {
-            steps {
-                script {
-                    sh 'whoami'
-                    sh 'ls -l /home/ubuntu/.kube/config'
-                }
-            }
-        }
         stage('Deploy to Kubernetes') {
             steps {
                 script {
