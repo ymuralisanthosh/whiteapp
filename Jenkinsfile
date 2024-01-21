@@ -110,6 +110,17 @@ pipeline {
                 }
             }
         }
+        stage('Print Environment') {
+            steps {
+                sh 'printenv'
+            }
+        }
+        stage('Print AWS CLI Config') {
+            steps {
+                sh 'aws configure list'
+            }
+        }
+
         stage('Deploy to Kubernetes') {
             steps {
                 script {
