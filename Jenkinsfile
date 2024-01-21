@@ -115,17 +115,16 @@ pipeline {
                 script {
                     // Remove the existing directory if it exists
                     sh 'rm -rf helm-charts-assignment'
+                    echo 'deleted chart'
         
                     // Clone the Helm charts repository
                     sh 'git clone https://github.com/ymuralisanthosh/helm-charts-assignment.git'
-        
+                    echo 'cloned'
                     // Full path to kubeconfig file
                     def kubeconfigPath = '/home/ubuntu/.kube/config'
-        
+                    echo 'defined path'
                     // Upgrade/Install Helm chart with kubeconfig specified
-                    withCredentials([[$class: 'FileBinding', credentialsId: 'your-sudo-credentials-id', variable: 'sudoFile']]) {
-                        sh "sudo /usr/local/bin/helm upgrade --install whiteapp helm-charts-assignment/assignment-apps/whiteapp --kubeconfig=${kubeconfigPath}"
-                    }
+                    sh "/usr/local/bin/helm upgrade --install whiteapp helm-charts-assignment/assignment-apps/whiteapp --kubeconfig=${kubeconfigPath}"
                 }
             }
         }
