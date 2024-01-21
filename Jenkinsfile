@@ -122,12 +122,16 @@ pipeline {
         }
         stage('Print AWS Credentials') {
             steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: 'your-credentials-id']]) {
-                    sh 'echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID"'
-                    sh 'echo "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"'
+                script {
+                    def awsCredentialsId = 'your-credentials-id' // Replace with your actual AWS credentials ID
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: awsCredentialsId]]) {
+                        sh 'echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID"'
+                        sh 'echo "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"'
+                    }
                 }
             }
         }
+
         stage('Print Kubeconfig Contents') {
             steps {
                 sh 'cat /home/ubuntu/.kube/config'
