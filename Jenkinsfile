@@ -126,7 +126,7 @@ pipeline {
                     echo 'defined path'
         
                     // Upgrade/Install Helm chart with kubeconfig specified
-                    sh "sudo /usr/local/bin/helm upgrade --install whiteapp assignment-apps/charts/whiteapp --kubeconfig=${kubeconfigPath}
+                    sh "sudo /usr/local/bin/helm upgrade --install whiteapp assignment-apps/charts/whiteapp --kubeconfig=${kubeconfigPath}"
                 }
             }
         }
