@@ -122,13 +122,16 @@ pipeline {
             steps {
                 script {
                     // Check if the directory exists
-                    if (!dirExists('helm-chart-assignment')) {
-                        // Clone the Helm charts repository
+                    if (dirExists('helm-charts-assignment')) {
+                        // If it exists, pull changes
+                        sh 'cd helm-charts-assignment && git pull'
+                    } else {
+                        // If it doesn't exist, clone the repository
                         sh 'git clone https://github.com/ymuralisanthosh/helm-charts-assignment.git'
                     }
         
                     // Upgrade/Install Helm chart
-                    sh 'helm upgrade --install whiteapp helm-chart-assignment/assignment-apps/whiteapp'
+                    sh 'helm upgrade --install whiteapp helm-charts-assignment/assignment-apps/whiteapp'
                 }
             }
         }
