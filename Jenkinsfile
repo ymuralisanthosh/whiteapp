@@ -123,7 +123,9 @@ pipeline {
                     def kubeconfigPath = '/home/ubuntu/.kube/config'
         
                     // Upgrade/Install Helm chart with kubeconfig specified
-                    sh 'sudo /usr/local/bin/helm upgrade --install whiteapp helm-charts-assignment/assignment-apps/whiteapp --kubeconfig=/home/ubuntu/.kube/config'
+                    withCredentials([[$class: 'FileBinding', credentialsId: 'your-sudo-credentials-id', variable: 'sudoFile']]) {
+                        sh "sudo /usr/local/bin/helm upgrade --install whiteapp helm-charts-assignment/assignment-apps/whiteapp --kubeconfig=${kubeconfigPath}"
+                    }
                 }
             }
         }
