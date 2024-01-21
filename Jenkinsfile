@@ -1,5 +1,11 @@
 pipeline {
-    agent any
+    agent {
+        kubernetes {
+            cloud 'kubernetes'
+            label 'your-label' // Specify a label that matches your Jenkins agent pod template
+            defaultContainer 'jnlp'
+        }
+    }
     environment {
         ARTIFACTORY_URL = 'http://13.201.102.58:8082/artifactory/application/'
         ARTIFACTORY_REPO = 'application/'
@@ -113,6 +119,9 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
+                    // Print kubeconfig contents
+                    sh "cat ${kubeconfigPath}"
+        
                     // Remove the existing directory if it exists
                     sh 'rm -rf helm-charts-assignment'
                     echo 'deleted chart'
@@ -121,16 +130,11 @@ pipeline {
                     sh 'git clone https://github.com/ymuralisanthosh/helm-charts-assignment.git'
                     echo 'cloned'
         
-                    // Full path to kubeconfig file
-                    def kubeconfigPath = '/home/ubuntu/.kube/config'
-                    echo 'defined path'
-        
                     // Upgrade/Install Helm chart with kubeconfig specified
-                    sh "sudo /usr/local/bin/helm upgrade --install whiteapp assignment-apps/charts/whiteapp --kubeconfig=${kubeconfigPath}"
+                    sh "/usr/local/bin/helm upgrade --install whiteapp assignment-apps/charts/whiteapp --kubeconfig=${kubeconfigPath}"
                 }
             }
-        }
-        
+        }       
     }
 }
     
