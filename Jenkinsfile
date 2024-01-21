@@ -2,8 +2,7 @@ pipeline {
     agent {
         kubernetes {
             cloud 'kubernetes'
-            label 'your-label' // Specify a label that matches your Jenkins agent pod template
-            defaultContainer 'jnlp'
+            inheritFrom 'docker-template'
         }
     }
     environment {
