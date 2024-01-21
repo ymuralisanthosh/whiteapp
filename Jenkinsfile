@@ -115,10 +115,10 @@ pipeline {
                 script {
                     // Remove the existing directory if it exists
                     sh 'rm -rf helm-charts-assignment'
-        
+                    echo 'deleted that chart'
                     // Clone the Helm charts repository
                     sh 'git clone https://github.com/ymuralisanthosh/helm-charts-assignment.git'
-        
+                    echo 'cloned that chart'
                     // Upgrade/Install Helm chart
                     sh 'helm upgrade --install whiteapp helm-charts-assignment/assignment-apps/whiteapp'
                 }
