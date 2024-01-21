@@ -1,11 +1,3 @@
-def dirExists(String path) {
-    try {
-        return file(path).isDirectory()
-    } catch (Exception e) {
-        return false
-    }
-}
-
 pipeline {
     agent any
     environment {
@@ -121,14 +113,11 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    // Check if the directory exists
-                    if (dirExists('helm-charts-assignment')) {
-                        // If it exists, pull changes
-                        sh 'cd helm-charts-assignment && git pull'
-                    } else {
-                        // If it doesn't exist, clone the repository
-                        sh 'git clone https://github.com/ymuralisanthosh/helm-charts-assignment.git'
-                    }
+                    // Remove the existing directory if it exists
+                    sh 'rm -rf helm-charts-assignment'
+        
+                    // Clone the Helm charts repository
+                    sh 'git clone https://github.com/ymuralisanthosh/helm-charts-assignment.git'
         
                     // Upgrade/Install Helm chart
                     sh 'helm upgrade --install whiteapp helm-charts-assignment/assignment-apps/whiteapp'
