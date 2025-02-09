@@ -1,0 +1,28 @@
+replicaCount: 1
+
+image:
+  repository: 585008055705.dkr.ecr.ap-south-2.amazonaws.com/assignment-ecr-repo
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 8081  
+
+ingress:
+  enabled: true
+  className: "nginx"
+  hosts:
+    - host: application.santhosh.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+

@@ -4,9 +4,12 @@ FROM openjdk:11-jre-slim
 # Set the working directory
 WORKDIR /app
 
-# Expose the port (adjust if your application uses a different port)
+# Copy the JAR file into the container
+COPY application.jar .
+
+# Expose the application port
 EXPOSE 8080
 
-# Command to run your app
+# Command to run the application
 CMD ["java", "-jar", "application.jar"]
 
