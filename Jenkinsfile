@@ -13,7 +13,7 @@ pipeline {
         stage('checkout') {
             steps {
                 echo 'checkout starting'
-                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/ymuralisanthosh/whiteapp.git']])
+                checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/ymuralisanthosh/whiteapp.git']])
                 echo 'checkout completed'
             }
         }
