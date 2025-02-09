@@ -1,14 +1,11 @@
 pipeline {
     agent any
     environment {
-        ARTIFACTORY_URL = 'http://13.201.102.58:8082/artifactory/application/'
-        ARTIFACTORY_REPO = 'application/'
-        ARTIFACTORY_PATH = 'http://13.201.102.58:8082/artifactory/application/com/example/white-app/1.0-SNAPSHOT/'
-        AWS_REGION = 'ap-south-1'
+        AWS_REGION = 'ap-south-2'
         ECR_REPO_NAME = 'whiteapp'
-        AWS_ACCOUNT_ID = '709087243859'
+        AWS_ACCOUNT_ID = '585008055705'
         ECR_REPO_URL = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME}"
-        DOCKER_IMAGE_NAME = 'application/whiteapp-image'
+        DOCKER_IMAGE_NAME = 'whiteapp-image'
         DOCKER_IMAGE_TAG = "${ECR_REPO_URL}/${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
 
     }
@@ -35,34 +32,6 @@ pipeline {
                     echo 'deploy starting'
                     sh 'mvn clean deploy'
                     echo 'deploy completed'
-                }
-            }
-        }
-        stage('push to jfrog-artifactory') {
-            steps {
-                dir('/var/lib/jenkins/workspace/Whiteapp/target') {
-                    script {
-                        def buildNumber = env.BUILD_NUMBER
-                        rtServer (
-                            id: 'Artifactory-1',
-                            url: 'http://13.201.102.58:8082/artifactory',
-                            username: 'ymsanthosh',
-                            password: 'Viratkohli_18',
-                            bypassProxy: true,
-                            timeout: 300
-                        )
-                        rtUpload (
-                            serverId: 'Artifactory-1',
-                            spec: '''{
-                                  "files": [
-                                    {
-                                      "pattern": "application-artifact.jar",
-                                      "target": "application/${buildNumber}/"
-                                     }
-                                  ]
-                            }''',
-                        )
-                    }
                 }
             }
         }
