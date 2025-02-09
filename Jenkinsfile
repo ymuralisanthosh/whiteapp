@@ -26,15 +26,7 @@ pipeline {
                 }
             }
         }
-        stage('deploy') {
-            steps {
-                script {
-                    echo 'deploy starting'
-                    sh 'mvn clean deploy'
-                    echo 'deploy completed'
-                }
-            }
-        }
+       
         stage('Build Docker Image') {
             steps {
                 script {
