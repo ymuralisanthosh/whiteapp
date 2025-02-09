@@ -21,37 +21,22 @@ pipeline {
             steps {
                 script {
                     echo 'build starting'
-                    sh 'mvn clean install'
+                    sh 'mvn clean package -DskipTests'
                     echo 'build completed'
                 }
             }
         }
        
-        stage('Build Docker Image') {
+                stage('Build Docker Image') {
             steps {
                 script {
-                    def ecrLoginCmd = "aws ecr get-login-password --region ${AWS_REGION}"
-                    def ecrAuthToken = sh(script: ecrLoginCmd, returnStdout: true).trim()
-                    
-                    // Log in to Docker with the new token
-                    script {
-                        withCredentials([string(credentialsId: 'ecr-auth-token', variable: 'ECR_AUTH_TOKEN')]) {
-                            sh "aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${ECR_REPO_URL}"
 
-                        }
-                    }
-                    
-                    // Generate a unique tag for each build (timestamp-based)
-                    def buildTag = env.BUILD_NUMBER
-                    
-                    // Tag the Docker image
-                    sh "docker tag ${DOCKER_IMAGE_NAME}:latest ${ECR_REPO_URL}:${buildTag}"
-                    
-                    // Push the Docker image to ECR
-                    sh "docker push ${ECR_REPO_URL}:${buildTag}"
+                    // Build the Docker image with the new tag
+                    sh "docker build ${dockerBuildArgs} -t ${ECR_REPO_URL}:${buildTag} ."
                 }
             }
         }
+
         stage('Push to ECR') {
             steps {
                 script {
