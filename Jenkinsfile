@@ -21,7 +21,7 @@ pipeline {
             steps {
                 script {
                     echo 'build starting'
-                    sh 'mvn clean package -DskipTests'
+                    sh 'mvn clean install'
                     echo 'build completed'
                 }
             }
@@ -30,9 +30,8 @@ pipeline {
                 stage('Build Docker Image') {
             steps {
                 script {
-
-                    // Build the Docker image with the new tag
-                    sh "docker build ${dockerBuildArgs} -t ${ECR_REPO_URL}:${buildTag} ."
+                  def buildTag = new Date().format("yyyyMMddHHmmss") 
+                  sh "docker build -t ${ECR_REPO_URL}:${buildTag} ."
                 }
             }
         }
@@ -40,7 +39,7 @@ pipeline {
         stage('Push to ECR') {
             steps {
                 script {
-                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: '709087243859']]) {
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: '585008055705']]) {
                         // Login to ECR
                         sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URL}"
 
